@@ -1,6 +1,7 @@
 package com.bibliotheque.universitaire.serviceutilisateurs.controller;
 
 import com.bibliotheque.universitaire.serviceutilisateurs.model.Utilisateur;
+import com.bibliotheque.universitaire.serviceutilisateurs.model.Role;
 import com.bibliotheque.universitaire.serviceutilisateurs.repository.UtilisateurRepository;
 import com.bibliotheque.universitaire.serviceutilisateurs.security.JwtTokenProvider;
 import com.bibliotheque.universitaire.serviceutilisateurs.service.UtilisateurService;
@@ -11,9 +12,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -31,6 +35,7 @@ public class UtilisateurController {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
 
     @PostMapping("/auth/inscription")
     public ResponseEntity<Utilisateur> inscrireUtilisateur(@RequestBody Utilisateur utilisateur) {
@@ -92,4 +97,5 @@ public class UtilisateurController {
         Utilisateur utilisateurMisAJour = utilisateurRepository.save(utilisateur);
         return ResponseEntity.ok(utilisateurMisAJour);
     }
+
 }
