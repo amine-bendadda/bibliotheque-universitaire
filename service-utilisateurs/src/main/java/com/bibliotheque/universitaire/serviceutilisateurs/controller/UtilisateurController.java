@@ -1,6 +1,7 @@
 package com.bibliotheque.universitaire.serviceutilisateurs.controller;
 
 import com.bibliotheque.universitaire.serviceutilisateurs.model.Utilisateur;
+import com.bibliotheque.universitaire.serviceutilisateurs.repository.UtilisateurRepository;
 import com.bibliotheque.universitaire.serviceutilisateurs.security.JwtTokenProvider;
 import com.bibliotheque.universitaire.serviceutilisateurs.service.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/utilisateurs/auth")
+@RequestMapping("/api/utilisateurs")
 public class UtilisateurController {
 
     @Autowired
@@ -22,15 +25,18 @@ public class UtilisateurController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
+    private UtilisateurRepository utilisateurRepository;
+
+    @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    @PostMapping("/inscription")
+    @PostMapping("/auth/inscription")
     public ResponseEntity<Utilisateur> inscrireUtilisateur(@RequestBody Utilisateur utilisateur) {
         Utilisateur nouvelUtilisateur = utilisateurService.inscrireUtilisateur(utilisateur);
         return ResponseEntity.ok(nouvelUtilisateur);
     }
 
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public ResponseEntity<String> login(@RequestBody Utilisateur utilisateur) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(utilisateur.getEmail(), utilisateur.getMotDePasse())
@@ -47,5 +53,12 @@ public class UtilisateurController {
 
         return ResponseEntity.ok(token);
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Utilisateur>> getAllUtilisateurs() {
+        List<Utilisateur> utilisateurs = utilisateurRepository.findAll();
+        return ResponseEntity.ok(utilisateurs);
+    }
+
 
 }

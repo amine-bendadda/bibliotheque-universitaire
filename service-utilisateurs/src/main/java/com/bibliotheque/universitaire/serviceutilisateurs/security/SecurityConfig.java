@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class SecurityConfig {
@@ -16,13 +15,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable()) // Désactiver CSRF pour simplifier les tests
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/utilisateurs/auth/**").permitAll() // Permettre à tous les utilisateurs de s'inscrire
-                        .requestMatchers("/api/utilisateurs/**").hasRole("ADMIN") // Seuls les admins peuvent gérer les utilisateurs
-                        .anyRequest().authenticated() // Authentification requise pour toutes les autres requêtes
+                        .requestMatchers("/api/utilisateurs/auth/**").permitAll() // Routes publiques
+                        .requestMatchers("/api/utilisateurs/all").hasRole("ADMIN") // Routes réservées aux admins
+                        .anyRequest().authenticated() // Authentification requise pour le reste
                 )
-                .httpBasic(customizer -> {});
+                .httpBasic(customizer -> {}); // Activer HTTP Basic sans utiliser httpBasic()
 
         return http.build();
     }
@@ -34,7 +33,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(); // Encoder des mots de passe avec BCrypt
     }
-
 }

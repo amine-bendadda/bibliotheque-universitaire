@@ -5,8 +5,8 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.1</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<version>3.1.4</version> <!-- Version compatible -->
+		<relativePath/>
 	</parent>
 	<groupId>com.bibliotheque.universitaire</groupId>
 	<artifactId>service-utilisateurs</artifactId>
@@ -28,7 +28,7 @@
 	</scm>
 	<properties>
 		<java.version>17</java.version>
-		<spring-cloud.version>2024.0.0</spring-cloud.version>
+		<spring-cloud.version>2022.0.4</spring-cloud.version> <!-- Version de Spring Cloud -->
 	</properties>
 	<dependencies>
 		<dependency>
