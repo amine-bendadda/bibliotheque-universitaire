@@ -29,15 +29,16 @@ public class LivreController {
         return ResponseEntity.ok(livreRepository.findAll());
     }
 
-    // Récupérer un livre par ID
+    // Récupérer un livre par ID (accessible à tous les utilisateurs authentifiés)
     @GetMapping("/public/{id}")
     public ResponseEntity<Livre> getLivreById(@PathVariable Long id) {
         Optional<Livre> livre = livreRepository.findById(id);
         return livre.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Créer un nouveau livre (seuls les admins peuvent accéder)
+    // Créer un nouveau livre (accessible uniquement aux administrateurs)
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Livre> createLivre(@RequestBody Livre livre) {
         Optional<Categorie> categorie = categorieRepository.findById(livre.getCategorie().getId());
         if (!categorie.isPresent()) {
@@ -48,8 +49,9 @@ public class LivreController {
         return ResponseEntity.status(HttpStatus.CREATED).body(nouveauLivre);
     }
 
-    // Mettre à jour un livre (seuls les admins peuvent accéder)
+    // Mettre à jour un livre (accessible uniquement aux administrateurs)
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Livre> updateLivre(@PathVariable Long id, @RequestBody Livre livreDetails) {
         Optional<Livre> livreExistant = livreRepository.findById(id);
         if (!livreExistant.isPresent()) {
@@ -71,8 +73,9 @@ public class LivreController {
         return ResponseEntity.ok(livreMisAJour);
     }
 
-    // Supprimer un livre (seuls les admins peuvent accéder)
+    // Supprimer un livre (accessible uniquement aux administrateurs)
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteLivre(@PathVariable Long id) {
         if (!livreRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
