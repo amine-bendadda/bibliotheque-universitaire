@@ -27,6 +27,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/livres/public/**").permitAll() // Routes publiques
                         .requestMatchers("/api/livres").hasRole("ADMIN") // POST sur /api/livres nécessite ADMIN
                         .requestMatchers("/api/livres/**").hasAnyRole("USER", "ADMIN") // Routes pour GET / PUT
+                        .requestMatchers("/api/livres/categories").hasRole("ADMIN")
                         .anyRequest().authenticated() // Toute autre requête nécessite une authentification
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))); // Activer la validation des JWT
