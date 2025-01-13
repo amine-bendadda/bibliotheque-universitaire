@@ -85,54 +85,6 @@ public class LivreController {
     }
 
     // Vérifier si un livre est disponible
-//    @GetMapping("/{id}/disponible")
-//    public ResponseEntity<Boolean> verifierDisponibilite(@PathVariable Long id) {
-//        Livre livre = livreRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("Livre non trouvé"));
-//        return ResponseEntity.ok(livre.isDisponible());
-//    }
-
-//    @PutMapping("/{id}/disponible")
-//    public ResponseEntity<String> rendreDisponible(@PathVariable Long id) {
-//        Livre livre = livreRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("Livre non trouvé"));
-//
-//        livre.setDisponible(true); // Rendre le livre disponible
-//        livreRepository.save(livre);
-//
-//        return ResponseEntity.ok("Le livre est maintenant disponible.");
-//    }
-
-
-    // Rendre un livre indisponible
-//    @PutMapping("/{id}/indisponible")
-//    public ResponseEntity<String> rendreIndisponible(@PathVariable Long id) {
-//        Livre livre = livreRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("Livre non trouvé"));
-//        if (!livre.isDisponible()) {
-//            return ResponseEntity.status(400).body("Livre déjà indisponible.");
-//        }
-//        livre.setDisponible(false);
-//        livreRepository.save(livre);
-//        return ResponseEntity.ok("Livre rendu indisponible.");
-//    }
-
-//    @PutMapping("/{id}/indisponible")
-//    public ResponseEntity<String> rendreIndisponible(@PathVariable Long id) {
-//        Optional<Livre> livre = livreRepository.findById(id);
-//        if (livre.isPresent()) {
-//            Livre livreExistant = livre.get();
-//            if (!livreExistant.isDisponible()) {
-//                return ResponseEntity.status(400).body("Livre déjà indisponible");
-//            }
-//            livreExistant.setDisponible(false);
-//            livreRepository.save(livreExistant);
-//            return ResponseEntity.ok("Livre rendu indisponible");
-//        }
-//        return ResponseEntity.notFound().build();
-//    }
-
-    // Vérifier si un livre est disponible
     @GetMapping("/{id}/disponible")
     public ResponseEntity<Boolean> verifierDisponibilite(@PathVariable Long id) {
         Livre livre = livreRepository.findById(id)
