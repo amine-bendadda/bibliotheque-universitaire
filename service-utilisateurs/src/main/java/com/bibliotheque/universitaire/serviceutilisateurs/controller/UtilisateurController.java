@@ -1,101 +1,210 @@
 package com.bibliotheque.universitaire.serviceutilisateurs.controller;
 
-import com.bibliotheque.universitaire.serviceutilisateurs.model.Utilisateur;
-import com.bibliotheque.universitaire.serviceutilisateurs.model.Role;
-import com.bibliotheque.universitaire.serviceutilisateurs.repository.UtilisateurRepository;
-import com.bibliotheque.universitaire.serviceutilisateurs.security.JwtTokenProvider;
-import com.bibliotheque.universitaire.serviceutilisateurs.service.UtilisateurService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/utilisateurs")
 public class UtilisateurController {
 
-    @Autowired
-    private UtilisateurService utilisateurService;
+    @Value("${keycloak.server-url}")
+    private String keycloakServerUrl;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    @Value("${keycloak.realm}")
+    private String keycloakRealm;
 
-    @Autowired
-    private UtilisateurRepository utilisateurRepository;
+    @Value("${keycloak.admin-client-id}")
+    private String keycloakAdminClientId;
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    @Value("${keycloak.admin-username}")
+    private String keycloakAdminUsername;
 
+    @Value("${keycloak.admin-password}")
+    private String keycloakAdminPassword;
 
-    @PostMapping("/auth/inscription")
-    public ResponseEntity<Utilisateur> inscrireUtilisateur(@RequestBody Utilisateur utilisateur) {
-        Utilisateur nouvelUtilisateur = utilisateurService.inscrireUtilisateur(utilisateur);
-        return ResponseEntity.ok(nouvelUtilisateur);
-    }
+    private final RestTemplate restTemplate = new RestTemplate();
 
-    @PostMapping("/auth/login")
-    public ResponseEntity<String> login(@RequestBody Utilisateur utilisateur) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(utilisateur.getEmail(), utilisateur.getMotDePasse())
+    // Obtenir le token d'administration Keycloak
+    private String obtenirTokenAdmin() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        String body = "client_id=" + keycloakAdminClientId +
+                "&username=" + keycloakAdminUsername +
+                "&password=" + keycloakAdminPassword +
+                "&grant_type=password";
+
+        HttpEntity<String> request = new HttpEntity<>(body, headers);
+        ResponseEntity<Map> response = restTemplate.postForEntity(
+                keycloakServerUrl + "/realms/master/protocol/openid-connect/token",
+                request,
+                Map.class
         );
 
-        org.springframework.security.core.userdetails.User userDetails =
-                (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            throw new RuntimeException("Erreur lors de l'obtention du token d'administration Keycloak");
+        }
 
-        String[] roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .toArray(String[]::new);
-
-        String token = jwtTokenProvider.generateToken(userDetails.getUsername(), roles);
-
-        return ResponseEntity.ok(token);
+        return (String) response.getBody().get("access_token");
     }
 
+    // 1. Login utilisateur connecté
+    @PostMapping("/login")
+    public Map<String, Object> login(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        return Map.of(
+                "username", jwt.getClaimAsString("preferred_username"),
+                "email", jwt.getClaimAsString("email"),
+                "roles", jwt.getClaimAsMap("realm_access").get("roles")
+        );
+    }
+
+    // 2. Inscription utilisateur
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestBody Map<String, String> user) {
+        String token = obtenirTokenAdmin();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token);
+
+        Map<String, Object> request = Map.of(
+                "username", user.get("username"),
+                "email", user.get("email"),
+                "enabled", true,
+                "credentials", List.of(Map.of("type", "password", "value", user.get("password"), "temporary", false))
+        );
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(
+                keycloakServerUrl + "/admin/realms/" + keycloakRealm + "/users",
+                entity,
+                String.class
+        );
+
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            return ResponseEntity.status(response.getStatusCode()).body("Erreur lors de l'inscription utilisateur : " + response.getBody());
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("Utilisateur inscrit avec succès");
+    }
+
+    // 3. Afficher les informations de l'utilisateur connecté
+    @GetMapping("/me")
+    public Map<String, Object> getUserInfo(Authentication authentication) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        return Map.of(
+                "username", jwt.getClaimAsString("preferred_username"),
+                "email", jwt.getClaimAsString("email"),
+                "roles", jwt.getClaimAsMap("realm_access").get("roles")
+        );
+    }
+
+    // 4. Afficher tous les utilisateurs
     @GetMapping("/all")
-    public ResponseEntity<List<Utilisateur>> getAllUtilisateurs() {
-        List<Utilisateur> utilisateurs = utilisateurRepository.findAll();
-        return ResponseEntity.ok(utilisateurs);
+    public ResponseEntity<Object> getAllUsers() {
+        String token = obtenirTokenAdmin();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<Object> response = restTemplate.exchange(
+                keycloakServerUrl + "/admin/realms/" + keycloakRealm + "/users",
+                HttpMethod.GET,
+                entity,
+                Object.class
+        );
+
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            return ResponseEntity.status(response.getStatusCode()).body("Erreur lors de la récupération des utilisateurs : " + response.getBody());
+        }
+
+        return ResponseEntity.ok(response.getBody());
     }
 
-    // Modifier les informations d'un utilisateur (seulement par le propriétaire)
-    @PutMapping("/{id}")
-    public ResponseEntity<Utilisateur> updateUtilisateur(@PathVariable Long id, @RequestBody Utilisateur utilisateurDetails) {
-        // Obtenez l'utilisateur connecté
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String emailConnecte = authentication.getName();
+    // 5. Modifier les informations de l'utilisateur connecté
+    @PutMapping("/me")
+    public ResponseEntity<String> updateUser(Authentication authentication, @RequestBody Map<String, Object> updates) {
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String userId = jwt.getClaimAsString("sub");
+        String token = obtenirTokenAdmin();
 
-        // Vérifiez si l'utilisateur connecté est propriétaire du compte
-        Optional<Utilisateur> optionalUtilisateur = utilisateurRepository.findById(id);
-        if (optionalUtilisateur.isEmpty()) {
-            return ResponseEntity.notFound().build();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token);
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(updates, headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                keycloakServerUrl + "/admin/realms/" + keycloakRealm + "/users/" + userId,
+                HttpMethod.PUT,
+                entity,
+                String.class
+        );
+
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            return ResponseEntity.status(response.getStatusCode()).body("Erreur lors de la mise à jour des informations utilisateur : " + response.getBody());
         }
 
-        Utilisateur utilisateur = optionalUtilisateur.get();
-        if (!utilisateur.getEmail().equals(emailConnecte)) {
-            return ResponseEntity.status(403).build(); // Forbidden si l'utilisateur connecté n'est pas le propriétaire
-        }
-
-        // Mise à jour des informations
-        utilisateur.setNom(utilisateurDetails.getNom());
-        utilisateur.setEmail(utilisateurDetails.getEmail());
-
-        // Si le mot de passe est modifié, hachez-le avant de le sauvegarder
-        if (utilisateurDetails.getMotDePasse() != null && !utilisateurDetails.getMotDePasse().isEmpty()) {
-            utilisateur.setMotDePasse(utilisateurService.encodePassword(utilisateurDetails.getMotDePasse()));
-        }
-
-        Utilisateur utilisateurMisAJour = utilisateurRepository.save(utilisateur);
-        return ResponseEntity.ok(utilisateurMisAJour);
+        return ResponseEntity.ok("Informations utilisateur mises à jour avec succès");
     }
 
+    // 6. Désactiver un compte utilisateur
+    @DeleteMapping("/{id}/disable")
+    public ResponseEntity<String> disableUser(@PathVariable String id) {
+        String token = obtenirTokenAdmin();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token);
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(Map.of("enabled", false), headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                keycloakServerUrl + "/admin/realms/" + keycloakRealm + "/users/" + id,
+                HttpMethod.PUT,
+                entity,
+                String.class
+        );
+
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            return ResponseEntity.status(response.getStatusCode()).body("Erreur lors de la désactivation de l'utilisateur : " + response.getBody());
+        }
+
+        return ResponseEntity.ok("Utilisateur désactivé avec succès");
+    }
+
+    // 7. Afficher les informations d'un utilisateur spécifique
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getUserDetails(@PathVariable String id) {
+        String token = obtenirTokenAdmin();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<Object> response = restTemplate.exchange(
+                keycloakServerUrl + "/admin/realms/" + keycloakRealm + "/users/" + id,
+                HttpMethod.GET,
+                entity,
+                Object.class
+        );
+
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            return ResponseEntity.status(response.getStatusCode()).body("Erreur lors de la récupération des informations utilisateur : " + response.getBody());
+        }
+
+        return ResponseEntity.ok(response.getBody());
+    }
 }

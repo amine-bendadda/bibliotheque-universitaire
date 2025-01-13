@@ -1,4 +1,4 @@
-package com.bibliotheque.universitaire.servicelivres.security;
+package com.bibliotheque.universitaire.serviceemprunts.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +13,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
@@ -24,15 +23,12 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // Désactiver CSRF pour les API REST
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/livres/public/**").permitAll() // Routes publiques
-                        .requestMatchers("/api/livres/{id}/disponible").permitAll()
-                        .requestMatchers("/api/livres/{id}/indisponible").permitAll()
-                        .requestMatchers("/api/livres").hasRole("ADMIN") // POST sur /api/livres nécessite ADMIN
-                        .requestMatchers("/api/livres/**").hasAnyRole("USER", "ADMIN") // Routes pour GET / PUT
-                        .requestMatchers("/api/livres/categories").hasRole("ADMIN")
-                        .anyRequest().authenticated() // Toute autre requête nécessite une authentification
+                        .requestMatchers("/api/emprunts/public/**").permitAll() // Endpoints publics
+                        .requestMatchers("/api/emprunts/admin/**").hasRole("ADMIN") // Accessible uniquement aux administrateurs
+                        .requestMatchers("/api/emprunts/{livreId}/creer").hasRole("USER") // Accessible uniquement aux utilisateurs
+                        .anyRequest().authenticated() // Toutes les autres requêtes nécessitent une authentification
                 )
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))); // Activer la validation des JWT
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
         return http.build();
     }
 
@@ -64,5 +60,4 @@ public class SecurityConfig {
 
         return jwtAuthenticationConverter;
     }
-
 }

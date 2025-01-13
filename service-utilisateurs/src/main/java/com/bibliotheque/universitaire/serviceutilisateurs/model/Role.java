@@ -3,17 +3,16 @@ package com.bibliotheque.universitaire.serviceutilisateurs.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "roles")
 public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String nom; // Exemple : ROLE_ADMIN, ROLE_USER
+    @Column(nullable = false, unique = true)
+    private String nom;
 
-    // Getters et setters
+    // Getters et Setters
     public Long getId() {
         return id;
     }

@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface EmpruntRepository extends JpaRepository<Emprunt, Long> {
     List<Emprunt> findByDateRetourBefore(LocalDate date);
+    List<Emprunt> findByUtilisateurId(String utilisateurId);
 }

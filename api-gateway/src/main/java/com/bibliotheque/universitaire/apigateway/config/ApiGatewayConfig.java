@@ -22,6 +22,10 @@ public class ApiGatewayConfig {
                 .route("service-utilisateurs", r -> r.path("/api/utilisateurs/**")
                         .uri("lb://service-utilisateurs")) // Load Balancer Eureka vers service-utilisateurs
 
+                // Route vers le Service Emprunts
+                .route("service-empruntes", r -> r.path("/api/emprunts/**")
+                        .uri("lb://service-emprunts")) // Load Balancer Eureka vers service-emprunts
+
                 .build();
     }
 
