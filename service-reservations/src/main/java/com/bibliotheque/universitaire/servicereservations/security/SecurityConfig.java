@@ -9,6 +9,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,13 +25,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // Désactiver CSRF pour les API REST
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Activer CORS
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/reservations/**").permitAll() // Endpoints publics
-                        .requestMatchers("/api/reservations/admin/**").hasRole("ADMIN") // Accessible uniquement aux administrateurs
-                        .requestMatchers("/api/reservations/{livreId}/**").hasRole("USER") // Accessible uniquement aux utilisateurs
-                        .anyRequest().authenticated() // Toutes les autres requêtes nécessitent une authentification
+                        .requestMatchers("/api/reservations/admin/**").hasRole("ADMIN") // Routes admin sécurisées
+                        .requestMatchers("/api/reservations/{livreId}/**").hasRole("USER") // Routes utilisateur sécurisées
+                        .requestMatchers("/api/reservations/**").permitAll() // Routes publiques
+                        .anyRequest().authenticated() // Autres requêtes nécessitant une authentification
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
+        // Validation JWT
         return http.build();
     }
 
@@ -60,4 +65,18 @@ public class SecurityConfig {
 
         return jwtAuthenticationConverter;
     }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:4200"); // Autoriser votre frontend
+        configuration.addAllowedMethod("*"); // Autoriser toutes les méthodes HTTP
+        configuration.addAllowedHeader("*"); // Autoriser tous les en-têtes
+        configuration.setAllowCredentials(true); // Autoriser les cookies ou les authentifications basées sur des sessions
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+    
 }

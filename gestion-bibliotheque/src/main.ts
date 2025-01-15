@@ -15,3 +15,5 @@ keycloakService.init().then((authenticated) => {
 }).catch((err) => {
   console.error('Erreur lors de l\'initialisation de Keycloak :', err);
 });
+
+

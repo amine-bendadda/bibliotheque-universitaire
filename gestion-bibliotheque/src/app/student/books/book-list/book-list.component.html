@@ -1,0 +1,104 @@
+<!-- 
+   <div class="book-list">
+    <h2>Liste des livres</h2> -->
+  
+    <!-- Carte de recherche et filtres -->
+    <!-- <div class="filter-card">
+      <input
+        type="text"
+        placeholder="Rechercher un livre par titre ou auteur..."
+        [(ngModel)]="searchText"
+        class="search-input"
+        (input)="filterBooks()"
+      />
+      <select
+        [(ngModel)]="selectedCategory"
+        class="filter-select"
+        (change)="filterBooks()"
+      >
+        <option value="">Toutes les catégories</option>
+        <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+      </select>
+      <select
+        [(ngModel)]="selectedAvailability"
+        class="filter-select"
+        (change)="filterBooks()"
+      >
+        <option value="">Tous les statuts</option>
+        <option value="true">Disponible</option>
+        <option value="false">Indisponible</option>
+      </select>
+    </div> -->
+  
+    <!-- Bloc indépendant pour la liste des livres -->
+  <!-- <div class="books-container">
+    <div class="book-card" *ngFor="let book of filteredBooks">
+      <img [src]="book.image" alt="{{ book.titre }}" class="book-image" />
+      <div class="book-details">
+        <h3>{{ book.titre }}</h3>
+        <p>Auteur : {{ book.auteur }}</p>
+        <p>Catégorie : {{ book.categorie.nom }}</p>
+        <p>Status : {{ book.disponible ? 'Disponible' : 'Indisponible' }}</p>
+      </div>
+    </div>
+  </div>
+  </div> -->
+  
+  <div class="book-list">
+    <h2>Liste des livres</h2>
+  
+    <!-- Carte de recherche et filtres -->
+    <div class="filter-card">
+      <input
+        type="text"
+        placeholder="Rechercher un livre par titre ou auteur..."
+        [(ngModel)]="searchText"
+        class="search-input"
+        (input)="filterBooks()"
+      />
+      <select
+        [(ngModel)]="selectedCategory"
+        class="filter-select"
+        (change)="filterBooks()"
+      >
+        <option value="">Toutes les catégories</option>
+        <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+      </select>
+      <select
+        [(ngModel)]="selectedAvailability"
+        class="filter-select"
+        (change)="filterBooks()"
+      >
+        <option value="">Tous les statuts</option>
+        <option value="true">Disponible</option>
+        <option value="false">Indisponible</option>
+      </select>
+    </div>
+  
+    <!-- Bloc indépendant pour la liste des livres -->
+    <div class="books-container">
+        <div 
+        class="book-card" 
+        *ngFor="let book of filteredBooks"
+        [routerLink]="['/books', book.id]" 
+        style="cursor: pointer;"
+      >
+        <img [src]="book.image" alt="{{ book.titre }}" class="book-image" />
+        <div class="book-details">
+          <h3>{{ book.titre }}</h3>
+          <p>Auteur : {{ book.auteur }}</p>
+          <p>Catégorie : {{ book.categorie.nom }}</p>
+          <p>Status : {{ book.disponible ? 'Disponible' : 'Indisponible' }}</p>
+          <!-- Bouton pour rediriger vers les détails -->
+          <button 
+          class="details-button" 
+          (click)="navigateToDetails(book.id)"
+        >
+        Voir les détails
+    </button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  

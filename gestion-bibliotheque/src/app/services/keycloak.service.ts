@@ -39,8 +39,11 @@ export class KeycloakService {
   
 
   getToken(): string | undefined {
-    return this.keycloakInstance.token;
+    const token = this.keycloakInstance.token;
+    console.log('Token récupéré depuis Keycloak:', token); // Log pour vérification
+    return token;
   }
+  
 
   logout(): void {
     console.log('Déconnexion demandée...');
@@ -48,16 +51,15 @@ export class KeycloakService {
     window.location.href = logoutUrl;
   }
   
-  
-
   private redirectBasedOnRole(): void {
     const roles = this.getRoles();
-    const currentPath = window.location.pathname; // Chemin actuel
-
-    if (roles.includes('ROLE_ADMIN') && currentPath !== '/admin') {
+    const currentPath = window.location.pathname;
+  
+    if (roles.includes('ROLE_ADMIN') && !currentPath.startsWith('/admin')) {
       window.location.href = '/admin';
-    } else if (roles.includes('ROLE_USER') && currentPath !== '/student') {
+    } else if (roles.includes('ROLE_USER') && !currentPath.startsWith('/student')) {
       window.location.href = '/student';
     }
   }
+  
 }

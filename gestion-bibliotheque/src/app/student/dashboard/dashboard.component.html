@@ -3,9 +3,17 @@
     <h1>{{ title }}</h1>
     <p>{{ description }}</p>
     <ul class="menu-list">
-      <li class="menu-item info"><a routerLink="/student/books">Rechercher des livres</a></li>
-      <li class="menu-item success"><a routerLink="/student/reservations">Voir mes réservations</a></li>
-      <li class="menu-item danger"><a routerLink="/student/profile">Mon profil</a></li>
+      <li class="menu-item info">
+        <a (click)="redirectTo('/student/books')">Rechercher des livres</a>
+      </li>
+      <li class="menu-item success">
+        <a (click)="redirectTo('/student/reservations')">Voir mes réservations</a>
+      </li>
+      <li class="menu-item danger">
+        <a (click)="redirectToKeycloakAccount()">Mon profil</a>
+      </li>
     </ul>
+    
+    
   </div>
 </div>

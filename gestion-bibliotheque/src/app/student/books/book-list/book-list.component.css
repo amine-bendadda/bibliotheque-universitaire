@@ -1,0 +1,135 @@
+/* Conteneur principal pour centrer tout */
+body {
+    margin: 0;
+    min-height: 100vh; /* Assurer une hauteur minimum */
+    display: flex;
+    flex-direction: column; /* Empile les éléments verticalement */
+    align-items: center; /* Centrer horizontalement */
+    background-color: #f4f4f4; /* Couleur de fond */
+    padding: 20px;
+  }
+  
+  /* Liste des livres */
+  .book-list {
+    display: flex;
+    flex-direction: column; /* Organisation verticale */
+    align-items: center; /* Centrer horizontalement */
+    width: 100%; /* Permet aux éléments de s'étendre sur toute la largeur */
+  }
+  
+  /* Titre des livres */
+  .book-list h2 {
+    width: 100%;
+    text-align: center; /* Centrer le texte */
+    font-size: 1.8rem;
+    color: #333;
+    margin: 0 0 20px; /* Espacement sous le titre */
+  }
+  
+  /* Carte de la barre de recherche */
+  .filter-card {
+    width: 100%;
+    max-width: 600px; /* Largeur maximale */
+    padding: 16px;
+    margin-bottom: 20px; /* Espacement avec la liste des livres */
+    background-color: #fff; /* Fond blanc */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-wrap: wrap; /* Permet le passage à la ligne si nécessaire */
+    gap: 10px; /* Espace entre les champs */
+    justify-content: space-between; /* Répartition des champs */
+  }
+  
+  /* Champ de recherche */
+  .search-input {
+    flex: 2; /* Plus large que les sélecteurs */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  /* Sélecteurs de filtres */
+  .filter-select {
+    flex: 1; /* Plus petit que l'input de recherche */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  /* Focus sur les champs */
+  .filter-card select:focus,
+  .filter-card input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+  
+/* Conteneur indépendant pour la liste des livres */
+.books-container {
+    width: 100%;
+    background-color: #fff; /* Fond blanc */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-wrap: wrap; /* Permet d'afficher les livres côte à côte et de passer à la ligne */
+    gap: 16px; /* Espace entre les livres */
+    justify-content: center; /* Centre les livres horizontalement */
+  }
+
+  /* Liste des cartes */
+  .book-list {
+    display: flex;
+    flex-wrap: wrap; /* Permet aux cartes de passer à la ligne si nécessaire */
+    gap: 16px; /* Espacement entre les cartes */
+    justify-content: center; /* Centrer les cartes horizontalement */
+  }
+  
+  /* Style des cartes */
+  .book-card {
+    width: 250px; /* Largeur fixe pour les cartes */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    flex-grow: 1; /* Permet de garder une taille uniforme */
+  }
+  
+  /* Image dans chaque carte */
+  .book-image {
+    max-width: 100%;
+    border-radius: 4px;
+  }
+  
+  /* Détails des livres */
+  .book-details h3 {
+    font-size: 1.2rem;
+    margin: 8px 0;
+  }
+  
+  .book-details p {
+    margin: 4px 0;
+    color: #555;
+  }
+  
+  .details-button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .details-button:hover {
+    background-color: #0056b3;
+  }
+  
