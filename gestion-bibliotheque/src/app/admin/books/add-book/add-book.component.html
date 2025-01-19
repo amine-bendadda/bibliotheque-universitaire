@@ -1,0 +1,62 @@
+<h2>Ajouter un nouveau livre</h2>
+
+<form (ngSubmit)="onSubmit()" #bookForm="ngForm">
+  <div>
+    <label for="titre">Titre :</label>
+    <input
+      type="text"
+      id="titre"
+      name="titre"
+      [(ngModel)]="newBook.titre"
+      required
+    />
+  </div>
+
+  <div>
+    <label for="auteur">Auteur :</label>
+    <input
+      type="text"
+      id="auteur"
+      name="auteur"
+      [(ngModel)]="newBook.auteur"
+      required
+    />
+  </div>
+
+  <div>
+    <label for="image">URL de l'image :</label>
+    <input
+      type="text"
+      id="image"
+      name="image"
+      [(ngModel)]="newBook.image"
+    />
+  </div>
+
+  <div>
+    <label for="categorie">Catégorie :</label>
+    <select
+      id="categorie"
+      name="categorie"
+      [(ngModel)]="selectedCategoryId"
+      required
+    >
+      <option value="0" disabled selected>Choisissez une catégorie</option>
+      <option *ngFor="let categorie of categories" [value]="categorie.id">
+        {{ categorie.nom }}
+      </option>
+    </select>
+  </div>
+
+  <div>
+    <label for="disponible">Disponible :</label>
+    <input
+      type="checkbox"
+      id="disponible"
+      name="disponible"
+      [(ngModel)]="newBook.disponible"
+    />
+  </div>
+
+  <button type="submit">Ajouter</button>
+</form>

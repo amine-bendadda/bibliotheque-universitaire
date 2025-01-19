@@ -13,6 +13,8 @@ import { ReservationService } from '../../../services/reservation.service';
 })
 export class BookDetailsComponent implements OnInit {
   book: Book | undefined;
+  reservationReussie: boolean = false; // Indique si la réservation a réussi
+  erreurReservation: boolean = false; // Indique s'il y a eu une erreur de réservation
 
   constructor(
     private route: ActivatedRoute,
@@ -27,7 +29,6 @@ export class BookDetailsComponent implements OnInit {
       this.loadBookDetails(+id);
     }
   }
-  
 
   loadBookDetails(id: number): void {
     this.bookService.getBookById(id).subscribe({
@@ -54,17 +55,20 @@ export class BookDetailsComponent implements OnInit {
       return;
     }
 
+    this.reservationReussie = false;
+    this.erreurReservation = false;
+
     this.reservationService.reserverLivre(this.book.id.toString()).subscribe({
       next: (response) => {
         console.log('Réservation réussie :', response);
+        this.reservationReussie = true; // Affiche une notification de succès
+        setTimeout(() => (this.reservationReussie = false), 3000); // Cache la notification après 3 secondes
       },
       error: (err) => {
         console.error('Erreur lors de la réservation :', err);
-        alert('Erreur lors de la réservation.');
+        this.erreurReservation = true; // Affiche une notification d'erreur
+        setTimeout(() => (this.erreurReservation = false), 3000); // Cache la notification après 3 secondes
       },
     });
   }
-  
-  
 }
-

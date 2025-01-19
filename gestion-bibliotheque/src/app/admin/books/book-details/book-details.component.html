@@ -1,0 +1,48 @@
+<h1 class="book-title">Détails du livre</h1>
+
+<div *ngIf="book" class="book-details-container">
+  <!-- Image du livre -->
+  <div class="book-image-container">
+    <img [src]="book?.image" alt="{{ book?.titre }}" class="book-image" />
+  </div>
+
+  <!-- Détails du livre -->
+  <div class="book-info">
+    <h2>{{ book?.titre }}</h2>
+    <div class="book-meta">
+      <p><strong>Auteur :</strong> {{ book?.auteur }}</p>
+      <p><strong>Catégorie :</strong> {{ book?.categorie?.nom }}</p>
+      <p><strong>Status :</strong> {{ book?.disponible ? 'Disponible' : 'Indisponible' }}</p>
+    </div>
+
+    <!-- Boutons alignés à droite -->
+  <div class="button-container">
+    <button
+      *ngIf="book?.disponible"
+      class="borrow-button"
+      (click)="emprunterLivre(book)"
+    >
+      Emprunter ce livre
+    </button>
+    <button
+      *ngIf="!book?.disponible"
+      class="reserve-button"
+      (click)="reserverLivre()"
+    >
+      Réserver
+    </button>
+    
+    <!-- Message de notification -->
+    <div *ngIf="reservationReussie" class="notification success">
+      Réservation effectuée avec succès !
+    </div>
+    <div *ngIf="erreurReservation" class="notification error">
+      Une erreur s'est produite lors de la réservation.
+    </div>
+
+  </div>
+</div>
+
+<div *ngIf="!book">
+  <p>Chargement des détails du livre...</p>
+</div>

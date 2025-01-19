@@ -1,0 +1,28 @@
+<h2>Liste des Réservations</h2>
+
+<div *ngIf="errorMessage" class="error-message">
+  {{ errorMessage }}
+</div>
+
+<table *ngIf="reservations.length > 0" class="reservations-table">
+  <thead>
+    <tr>
+      <th>ID Réservation</th>
+      <th>ID Livre</th>
+      <th>ID Utilisateur</th>
+      <th>Date de Réservation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let reservation of reservations">
+      <td>{{ reservation.id }}</td>
+      <td>{{ reservation.livreId }}</td>
+      <td>{{ reservation.utilisateurId }}</td>
+      <td>{{ reservation.dateReservation }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<p *ngIf="reservations.length === 0 && !errorMessage">
+  Aucune réservation trouvée.
+</p>

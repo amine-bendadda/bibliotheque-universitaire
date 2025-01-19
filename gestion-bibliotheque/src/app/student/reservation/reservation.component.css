@@ -1,0 +1,176 @@
+/* Titre principal */
+.title {
+    text-align: center;
+    font-size: 2.4rem;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  /* Message d'erreur */
+  .error-message {
+    color: #f44336; /* Rouge pour les erreurs */
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
+  
+  /* Message aucune réservation */
+  .no-reservation-message {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #555;
+  }
+  
+  /* Liste des réservations */
+  .reservation-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Espace entre les cartes */
+    justify-content: center; /* Centre les cartes */
+    margin-top: 20px;
+  }
+  
+  /* Carte individuelle */
+  .reservation-card {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 300px; /* Taille fixe de chaque carte */
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .reservation-card:hover {
+    transform: translateY(-5px); /* Animation au survol */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Image de la réservation */
+  .reservation-image {
+    width: 100%;
+    height: 300px; /* Hauteur fixe pour les images */
+    object-fit: cover; /* Assure que l'image est bien cadrée */
+  }
+  
+  /* Détails de la réservation */
+  .reservation-details {
+    padding: 16px;
+    text-align: left;
+  }
+  
+  .reservation-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .reservation-author,
+  .reservation-date,
+  .reservation-status {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 6px;
+  }
+  /* Statut général */
+.reservation-status {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-top: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: inline-block; /* Apparence comme un badge */
+    text-align: center;
+  }
+  
+  /* Statut Disponible */
+  .status-available {
+    color: #ffffff;
+    background-color: #4caf50; /* Vert pour disponible */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #3e8e41;
+  }
+  
+  /* Statut Non Disponible */
+  .status-unavailable {
+    color: #ffffff;
+    background-color: #f44336; /* Rouge pour non disponible */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #d32f2f;
+  }
+  
+  /* Bouton Trash */
+.trash-button {
+    background-color: transparent; /* Fond transparent */
+    border: none; /* Pas de bordure */
+    color: #f44336; /* Couleur rouge */
+    font-size: 1.5rem; /* Taille de l'icône */
+    cursor: pointer; /* Curseur clic */
+    position: absolute; /* Positionné dans la carte */
+    top: 10px; /* Distance par rapport au haut */
+    right: 10px; /* Distance par rapport à la droite */
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+  
+  .trash-button:hover {
+    color: #d32f2f; /* Rouge plus foncé au survol */
+    transform: scale(1.2); /* Agrandissement au survol */
+  }
+  
+  /* Position relative pour le conteneur */
+  .reservation-card {
+    position: relative; /* Nécessaire pour positionner le bouton */
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+ /* Bouton Trash */
+/* Bouton Trash */
+.trash-button {
+    display: flex; /* Aligne l'icône et le texte horizontalement */
+    align-items: center; /* Centre verticalement l'icône et le texte */
+    justify-content: center; /* Centre horizontalement */
+    gap: 8px; /* Espace entre l'icône et le texte */
+    padding: 10px 20px; /* Marges internes */
+    background-color: #f44336; /* Couleur rouge */
+    color: #fff; /* Couleur du texte */
+    font-size: 1.1rem; /* Taille du texte */
+    font-weight: bold; /* Texte en gras */
+    border: none; /* Pas de bordure */
+    border-radius: 8px; /* Coins arrondis */
+    cursor: pointer; /* Curseur clic */
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Légère ombre */
+  }
+  
+  /* Animation au survol */
+  .trash-button:hover {
+    background-color: #d32f2f; /* Rouge plus foncé au survol */
+    transform: translateY(-2px); /* Déplacement vers le haut */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Ombre accentuée */
+  }
+  
+  /* Icône Font Awesome dans le bouton */
+  .trash-button i {
+    font-size: 1.2rem; /* Taille de l'icône */
+  }
+  
+  /* Bouton désactivé */
+  .trash-button:disabled {
+    background-color: #cccccc; /* Gris clair */
+    color: #666; /* Gris foncé pour le texte */
+    cursor: not-allowed; /* Indicateur non interactif */
+    box-shadow: none; /* Supprime l'ombre */
+  }
+  
+  
+  

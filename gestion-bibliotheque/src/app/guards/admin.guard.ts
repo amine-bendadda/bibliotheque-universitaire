@@ -12,9 +12,8 @@ export class AdminGuard implements CanActivate {
     const roles = this.keycloakService.getRoles();
     if (roles.includes('ROLE_ADMIN')) {
       return true;
-    } else {
-      this.router.navigate(['/student']); // Redirige vers la page étudiant si non autorisé
-      return false;
-    }
+    } 
+    this.router.navigate(['/']); // Redirection si l'utilisateur n'est pas autorisé
+    return false;
   }
 }

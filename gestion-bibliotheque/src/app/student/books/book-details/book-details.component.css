@@ -1,7 +1,8 @@
 /* Conteneur principal pour les détails du livre */
 .book-details-container {
   display: flex;
-  align-items: center; /* Centre verticalement l'image et le texte */
+  align-items: center; /* Centre verticalement l'image, le texte et les boutons */
+  justify-content: space-between; /* Espace entre le contenu et les boutons */
   gap: 30px; /* Espace entre l'image et le texte */
   background-color: #ffffff;
   border: 1px solid #ddd;
@@ -12,13 +13,23 @@
   margin: 20px auto; /* Centre horizontalement la carte et ajoute de l'espace autour */
 }
 
+/* Titre principal centré */
+.book-title {
+  text-align: center; /* Centre le texte horizontalement */
+  font-size: 2.8rem; /* Taille du titre principale */
+  font-weight: bold; /* Met en gras le titre */
+  margin-bottom: 30px; /* Espace entre le titre et la carte */
+  color: #333; /* Couleur du texte */
+}
+
+
 /* Conteneur de l'image */
 .book-image-container {
   flex-shrink: 0; /* Empêche l'image de rétrécir */
 }
 
 .book-image {
-  width: 300px; /* Largeur fixe plus grande pour l'image */
+  width: 300px; /* Largeur fixe pour l'image */
   height: auto; /* Maintient le ratio de l'image */
   border-radius: 12px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
@@ -52,9 +63,16 @@
   color: #333;
 }
 
+/* Conteneur des boutons */
+.button-container {
+  display: flex;
+  flex-direction: column; /* Empile les boutons verticalement */
+  align-items: flex-end; /* Aligne les boutons à droite */
+  gap: 10px; /* Espacement entre les boutons */
+}
+
 /* Bouton Emprunter */
 .borrow-button {
-  margin-top: 20px;
   padding: 12px 24px;
   font-size: 1.2rem;
   color: #fff;
@@ -72,4 +90,38 @@
 .borrow-button:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
+}
+
+/* Bouton Réserver */
+.reserve-button {
+  padding: 12px 24px;
+  font-size: 1.2rem;
+  color: #fff;
+  background-color: #ff5722; /* Couleur orange pour le bouton Réserver */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.reserve-button:hover {
+  background-color: #e64a19; /* Couleur au survol */
+}
+
+.notification {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.notification.success {
+  color: #fff;
+  background-color: #4caf50; /* Vert pour succès */
+}
+
+.notification.error {
+  color: #fff;
+  background-color: #f44336; /* Rouge pour erreur */
 }

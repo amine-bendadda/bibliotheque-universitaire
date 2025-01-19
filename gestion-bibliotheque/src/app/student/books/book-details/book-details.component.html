@@ -1,4 +1,4 @@
-<h1>Détails du livre</h1>
+<h1 class="book-title">Détails du livre</h1>
 
 <div *ngIf="book" class="book-details-container">
   <!-- Image du livre -->
@@ -15,22 +15,30 @@
       <p><strong>Status :</strong> {{ book?.disponible ? 'Disponible' : 'Indisponible' }}</p>
     </div>
 
-    <!-- Bouton pour emprunter -->
-    <button 
-      class="borrow-button" 
-      [disabled]="!book?.disponible"
+    <!-- Boutons alignés à droite -->
+  <div class="button-container">
+    <button
+      *ngIf="book?.disponible"
+      class="borrow-button"
       (click)="emprunterLivre(book)"
     >
-      {{ book?.disponible ? 'Emprunter ce livre' : 'Indisponible' }}
+      Emprunter ce livre
     </button>
-
     <button
-    *ngIf="!book.disponible"
-    class="reserve-button"
-    (click)="reserverLivre()"
-  >
-    Réserver
-  </button>
+      *ngIf="!book?.disponible"
+      class="reserve-button"
+      (click)="reserverLivre()"
+    >
+      Réserver
+    </button>
+    
+    <!-- Message de notification -->
+    <div *ngIf="reservationReussie" class="notification success">
+      Réservation effectuée avec succès !
+    </div>
+    <div *ngIf="erreurReservation" class="notification error">
+      Une erreur s'est produite lors de la réservation.
+    </div>
 
   </div>
 </div>

@@ -23,8 +23,11 @@ export class ReservationService {
 
   // Annuler une réservation
   annulerReservation(reservationId: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${reservationId}/annuler`);
+    const url = `${this.baseUrl}/${reservationId}/annuler`;
+    console.log('Appel de l\'API pour annuler la réservation avec URL :', url);
+    return this.http.delete(url);
   }
+  
 
   // Récupérer toutes les réservations pour l'administrateur
   getToutesLesReservations(): Observable<any> {

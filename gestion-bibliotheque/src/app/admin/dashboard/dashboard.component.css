@@ -32,19 +32,24 @@
 
 .menu-item {
   margin-bottom: 10px;
-  padding: 15px;
+  padding: 0; /* Supprime le padding du <li> pour le donner au <a> */
   border-radius: 8px;
   font-size: 16px;
   font-weight: bold;
   text-align: left;
-  color: white;
   transition: transform 0.2s;
 }
 
 .menu-item a {
+  display: block; /* Fait en sorte que le lien couvre tout le conteneur */
+  padding: 15px; /* Ajoute le padding directement au lien */
   color: white;
   text-decoration: none;
+  cursor: pointer;
+  border-radius: 8px; /* Applique également les coins arrondis au lien */
 }
+
+
 
 .menu-item:hover {
   transform: translateY(-5px);

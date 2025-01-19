@@ -1,1 +1,43 @@
-<p>reservation works!</p>
+<h1 class="title">Mes Réservations</h1>
+
+<!-- Message d'erreur -->
+<div *ngIf="errorMessage" class="error-message">
+  {{ errorMessage }}
+</div>
+
+<!-- Message si aucune réservation -->
+<div *ngIf="reservations.length === 0 && !errorMessage" class="no-reservation-message">
+  <p>Aucune réservation trouvée.</p>
+</div>
+
+<!-- Liste des réservations -->
+<div *ngIf="reservations.length > 0" class="reservation-list">
+  <div *ngFor="let reservation of reservations" class="reservation-card">
+    <!-- Image du livre -->
+    <img
+      [src]="reservation.livre.image"
+      [alt]="'Image de ' + reservation.livre.titre"
+      class="reservation-image"
+    />
+
+    <!-- Informations du livre -->
+    <div class="reservation-details">
+      <h3 class="reservation-title">{{ reservation.livre.titre }}</h3>
+      <p class="reservation-author">Auteur : {{ reservation.livre.auteur }}</p>
+      <p class="reservation-date">
+        Date de réservation : {{ reservation.reservation.dateReservation | date }}
+      </p>
+      <p
+  class="reservation-status"
+  [ngClass]="reservation.livre.disponible ? 'status-available' : 'status-unavailable'"
+>
+  Status : {{ reservation.livre.disponible ? 'Disponible' : 'Non disponible' }}
+</p>
+<!-- Bouton pour annuler la réservation -->
+<button class="trash-button" (click)="supprimerReservation(reservation)">
+    <i class="fa fa-trash"></i> Annuler la réservation
+  </button>
+  
+    </div>
+  </div>
+</div>
